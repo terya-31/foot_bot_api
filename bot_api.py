@@ -12,11 +12,11 @@ from match_predictor_api import get_top_bets_api, analyze_match
 
 # ============ КОНФИГУРАЦИЯ ============
 BOT_TOKEN = os.getenv("BOT_TOKEN")
+API_KEY = os.getenv("API_KEY")
 if not BOT_TOKEN:
     print("❌ Токен не найден")
     exit(1)
 
-API_KEY = "g69egm3kibyrr20e"  # ваш ключ
 client = SStatsClient(API_KEY)
 
 # Кэш для данных (чтобы не дёргать API при каждом запросе)

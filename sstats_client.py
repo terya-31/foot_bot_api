@@ -39,7 +39,7 @@ class SStatsClient:
         with open(cache_file, 'w', encoding='utf-8') as f:
             json.dump({'timestamp': time.time(), 'data': data}, f, ensure_ascii=False)
     
-    def get_today_matches(self, limit: int = 50) -> List[Dict]:
+    def get_today_matches(self, limit: int = 100) -> List[Dict]:
         """Получает матчи на сегодня"""
         today = datetime.now(self.tz).strftime("%Y-%m-%d")
         cache_key = f"matches_{today}"
@@ -181,48 +181,3 @@ class SStatsClient:
 
 
 # В конце файла, после основного кода
-if __name__ == "__main__":
-    API_KEY = os.getenv("API_KEY")  # ваш ключ
-    
-    client = SStatsClient(API_KEY)
-    
-    print("=" * 60)
-    print("📊 ТЕСТИРОВАНИЕ SStats КЛИЕНТА")
-    print("=" * 60)
-    
-    # Получаем матчи на сегодня
-    matches = client.get_today_matches(limit=10)
-    print(f"\n📋 МАТЧИ НА СЕГОДНЯ:")
-    for i, match in enumerate(matches[:5], 1):
-        home = match.get('homeTeam', {}).get('name', '?')
-        away = match.get('awayTeam', {}).get('name', '?')
-        game_id = match.get('id')
-        print(f"  {i}. {home} vs {away} (ID: {game_id})")
-    
-    # Пробуем получить статистику для первого матча
-    if matches:
-        first_match = matches[0]
-        game_id = first_match.get('id')
-        home_team = first_match.get('homeTeam', {}).get('name', '?')
-        away_team = first_match.get('awayTeam', {}).get('name', '?')
-        
-        print(f"\n📊 ПОЛУЧАЕМ СТАТИСТИКУ ДЛЯ МАТЧА: {home_team} vs {away_team}")
-        print(f"🆔 Game ID: {game_id}")
-        
-        if game_id:
-            stats = client.get_match_stats(game_id, limit=10)
-            
-            if stats:
-                print(f"\n✅ СТАТИСТИКА ПОЛУЧЕНА:")
-                print(f"📦 Структура ответа: {type(stats)}")
-                print(f"🔑 Ключи: {list(stats.keys()) if isinstance(stats, dict) else 'не словарь'}")
-                
-                # Показываем первые 500 символов для понимания структуры
-                import json
-                print(f"\n📄 ПЕРВЫЕ 500 СИМВОЛОВ ОТВЕТА:")
-                print(json.dumps(stats, ensure_ascii=False, indent=2)[:500])
-            else:
-                print("❌ Статистика не получена")
-        else:
-            print("❌ Нет game_id у матча")
-
